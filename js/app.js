@@ -20,29 +20,20 @@ Enemy.prototype.update = function(dt) {
     // all computers.
     this.x = this.x + this.speed * dt;
 
-    if(this.x > 400) {
-        if(allEnemies && allEnemies.indexOf(this)) {
-            allEnemies.splice(allEnemies.indexOf(this), 1);
+    if(allEnemies) {
+        if(this.x > 400) {
+            for(var i = 0; i < allEnemies.length; i++) {
+                if(allEnemies[i].x > this.x) {
+                    allEnemies.splice(i, 1);
+                }
+            }
+        }
+        if(allEnemies.length < 3) {
+            var enemy = new Enemy();
+            allEnemies.push(enemy);
         }
     }
 
-    if(allEnemies && allEnemies.length < 4) {
-        var enemy = new Enemy();
-        allEnemies.push(enemy);
-    }
-    if(player) {
-        for(var i = 0; i < allEnemies.length; i++) {
-            if(player.y === allEnemies[i].y
-                && (player.x > allEnemies[i].x
-                && player.x < (allEnemies[i].x + 101))
-            ) {
-            // console.log('enemy', allEnemies[i].y, 'enemyx', allEnemies[i].x);
-            // console.log('playery', player.y, 'playerx', player.x);
-                player.resetPlayer();
-            }
-        }
-        // console.log('py', player.y, 'px', player.x);
-    }
 };
 
 // Draw the enemy on the screen, required method for game
@@ -60,7 +51,16 @@ var Player = function() {
 };
 
 Player.prototype.update = function(dt) {
-
+    if(allEnemies) {
+        for(var i = 0; i < allEnemies.length; i++) {
+            if(this.y === allEnemies[i].y
+                && (this.x > allEnemies[i].x
+                && this.x < (allEnemies[i].x + 85) || (this.x < allEnemies[i].x && this.x > (allEnemies[i].x - 85)))
+            ) {
+                this.resetPlayer();
+            }
+        }
+    }
 };
 
 Player.prototype.render = function() {
